@@ -49,18 +49,19 @@
                   ng-trim="true"
                   ng-change="validatePageInput()"
                   value="{{pageInput}}">
-                  <button id="page-input-mobile-button"
-                    type="submit"
-                    class="btn btn-default">
-                    <span class="icon-right"></span>
-                  </button>
+                <button id="page-input-mobile-button"
+                  type="submit"
+                  class="btn btn-default">
+                  <span class="icon-right"></span>
+                </button>
+                <span id="mobile-last-page-text">(of {{numPages}})</span>
               </div>
             </form>
           </li>
         </ul>
       </div>
 
-      <!-- Mobile Logo -->
+      <!-- Mobile Logo / Pagination -->
       <div class="row" ng-click="mobileMenuActive = false">
         <div id="mobile-logo-wrapper"
           class="mobile-logo-wrapper">
@@ -71,8 +72,30 @@
           default-image="{{logoImageUrl}}"
           fallback-image="{{logoImageUrl}}">
         </div>
+
+        <div id="pagination-top-wrapper-mobile"
+          class="pagination-top-wrapper-mobile">
+            <uib-pagination
+              id="pagination-top-mobile"
+              class="pagination-s pagination-top"
+              ng-model="currentPage"
+              ng-click="changePage()"
+              boundary-links="true"
+              boundary-link-numbers="true"
+              rotate="true"
+              force-ellipses="true"
+              total-items="numImages"
+              items-per-page="imagesPerPage"
+              max-size="maxSizeMobile"
+              previous-text="&lsaquo;"
+              next-text="&rsaquo;"
+              first-text="&laquo;"
+              last-text="&raquo;">
+            </uib-pagination>
+        </div>
+        
       </div>
-      <!-- Mobile Logo -->
+      <!-- Mobile Logo / Pagination -->
 
       <!-- Desktop / Tablet Logo, Top Pagination, Controls -->
       <div class="row flick-pagination pagination-row-top-desktop-tablet" ng-click="mobileMenuActive = false">
@@ -289,6 +312,26 @@
         total-items="numImages"
         items-per-page="imagesPerPage"
         max-size="maxSize"
+        previous-text="&lsaquo;"
+        next-text="&rsaquo;"
+        first-text="&laquo;"
+        last-text="&raquo;">
+      </uib-pagination>
+    </div>
+    <div class="row flick-pagination-mobile">
+
+      <uib-pagination
+        id="pagination-bottom-mobile"
+        class="pagination-s pagination-bottom"
+        ng-model="currentPage"
+        ng-click="changePage()"
+        boundary-links="true"
+        boundary-link-numbers="true"
+        rotate="true"
+        force-ellipses="true"
+        total-items="numImages"
+        items-per-page="imagesPerPage"
+        max-size="maxSizeMobile"
         previous-text="&lsaquo;"
         next-text="&rsaquo;"
         first-text="&laquo;"

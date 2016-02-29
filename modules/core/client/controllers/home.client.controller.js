@@ -42,6 +42,7 @@ angular.module('core').controller('HomeController', ['$scope', '$http', '$log', 
     $scope.imagesCollection = [];
     $scope.imagesPerPage = 12;
     $scope.maxSize = 5;
+    $scope.maxSizeMobile = 3;
     $scope.numPages = 1;
     $scope.numImages = 0;
     $scope.pageInput = '1';
