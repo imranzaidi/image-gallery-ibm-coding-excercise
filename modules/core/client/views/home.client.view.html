@@ -1,0 +1,372 @@
+<section ng-controller="HomeController">
+  <div class="image-page-view-wrapper text-center">
+    <!-- START: Header (Logo, Controls, Pagination) -->
+    <div id="header">
+      <div id="mobile-menu">
+        <div id="mobile-menu-bar">
+          <!-- Menu -->
+          <span class="mobile-icon icon-menu"
+            ng-click="mobileMenuActive = !mobileMenuActive; closeImageView()"></span>
+          <!-- Search -->
+          <span class="mobile-icon icon-search-1"
+            ng-click="mobileMenuActive = false; searchAndUpdateView(); closeImageView()"></span>
+          <span>
+            <form ng-submit="mobileMenuActive = false; searchAndUpdateView(); closeImageView()"
+              id="search-form-mobile">
+              <div class="form-group">
+                <input id="search-input-mobile"
+                  class="search-input form-control"
+                  type="text"
+                  ng-model="searchInput"
+                  ng-trim="true">
+              </div>
+            </form>
+          </span>
+          <span class="mobile-icon icon-circle-empty"
+          ng-show="searchEmpty"></span>
+          <span class="mobile-icon icon-circle"
+          ng-hide="searchEmpty"
+          ng-click="clearSearch()"></span>
+        </div>
+        <!-- <ul ng-animate="'slide'" -->
+        <ul class="slide-tile"
+          ng-hide="!mobileMenuActive">
+          <li ng-repeat="option in sortOptions">
+            <a href="#" ng-click="sortImages(option)">
+              <span class="sort-text">{{option}}</span>
+              <span class="sort-marker icon-ok" ng-show="option === sortedBy">
+            </a>
+          </li>
+          <li>
+            <form ng-submit="jumpToPage()"
+              class="form-inline page-input-form-mobile">
+              <div class="form-group">
+                <label for="page-input" class="jump-to-page-mobile">Jump to Page:</label>
+                <input id="page-input-mobile"
+                  class="page-input form-control"
+                  type="text"
+                  ng-model="pageInput"
+                  ng-trim="true"
+                  ng-change="validatePageInput()"
+                  value="{{pageInput}}">
+                  <button id="page-input-mobile-button"
+                    type="submit"
+                    class="btn btn-default">
+                    <span class="icon-right"></span>
+                  </button>
+              </div>
+            </form>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mobile Logo -->
+      <div class="row" ng-click="mobileMenuActive = false">
+        <div id="mobile-logo-wrapper"
+          class="mobile-logo-wrapper">
+          <img preload-image
+          id="nasa-logo-mobile"
+          class="nasa-logo-mobile col-xs-12"
+          ng-src="{{logoImageUrl}}"
+          default-image="{{logoImageUrl}}"
+          fallback-image="{{logoImageUrl}}">
+        </div>
+      </div>
+      <!-- Mobile Logo -->
+
+      <!-- Desktop / Tablet Logo, Top Pagination, Controls -->
+      <div class="row flick-pagination pagination-row-top-desktop-tablet" ng-click="mobileMenuActive = false">
+        <!-- Logo -->
+        <img preload-image
+        id="nasa-logo-desktop-tablet"
+        class="nasa-logo-desktop-tablet col-lg-2 col-md-2 col-sm-2"
+        ng-src="{{logoImageUrl}}"
+        default-image="{{logoImageUrl}}"
+        fallback-image="{{logoImageUrl}}">
+
+        <div id="controls">
+          <!-- pagination -->
+          <div id="pagination-top-wrapper"
+            class="pagination-top-wrapper">
+
+            <uib-pagination
+              id="pagination-top"
+              class="pagination-l pagination-top"
+              ng-model="currentPage"
+              ng-click="changePage()"
+              boundary-links="true"
+              boundary-link-numbers="true"
+              rotate="true"
+              force-ellipses="true"
+              total-items="numImages"
+              items-per-page="imagesPerPage"
+              max-size="maxSize"
+              previous-text="&lsaquo;"
+              next-text="&rsaquo;"
+              first-text="&laquo;"
+              last-text="&raquo;">
+            </uib-pagination>
+
+            <form ng-submit="jumpToPage()"
+              class="form-inline page-input-form">
+              <div class="form-group">
+                <label for="page-input" class="jump-to-page-desktop-tablet">JUMP TO PAGE:</label>
+                <input id="page-input"
+                  class="page-input form-control"
+                  type="text"
+                  ng-model="pageInput"
+                  ng-trim="true"
+                  ng-change="validatePageInput()"
+                  value="{{pageInput}}">
+              </div>
+            </form>
+          </div>
+
+          <div id="search-wrapper"
+            class="search-wrapper">
+            <button id="clear-search" type="button" class="btn"
+              ng-click="clearSearch()">
+              <span class="icon-cancel"></span>
+            </button>
+
+            <!-- Search -->
+            <form ng-submit="searchAndUpdateView()"
+              id="search-form">
+              <div class="form-group">
+                <input id="search-input"
+                  class="search-input form-control"
+                  type="text"
+                  ng-model="searchInput"
+                  ng-trim="true"
+                  placeholder="Search">
+              </div>
+            </form>
+
+            <!-- Sort -->
+            <div id="sort-dropdown"
+              class="btn-group"
+              uib-dropdown
+              ng-disabled="sortDisabled"
+              uib-keyboard-nav>
+              <button id="simple-btn-keyboard-nav" type="button" class="btn btn-default" uib-dropdown-toggle>
+                Sort <span class="caret"></span>
+              </button>
+              <ul uib-dropdown-menu role="menu" aria-labelledby="simple-btn-keyboard-nav">
+                <li role="menuitem"
+                  ng-repeat="option in sortOptions">
+                  <a href="#" ng-click="sortImages(option)">
+                    <span class="sort-text">{{option}}</span>
+                    <span class="sort-marker icon-ok" ng-show="option === sortedBy">
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Desktop / Tablet Logo, Top Pagination, Controls -->
+
+      <!-- <button class="btn btn-primary" ng-click="nextPage()">Test</button> -->
+    </div>
+    <!-- END: Header (Logo, Controls, Pagination) -->
+
+
+    <!-- START: Preloaded Image Set -->
+    <div class="row" id="image-preloading" ng-hide="false">
+      <ol ng-repeat="image in preloadImageList" ng-hide="true">
+        <li>
+          <h5 class="image-title">{{image.title}}</h4>
+          <div class="page-view-image-wrapper">
+            <img preload-image
+            class="page-view-size"
+            ng-src="{{imageUrl(image)}}"
+            default-image="{{imageUrl(image)}}"
+            fallback-image="{{imageUrl(image)}}">
+          </div>
+        </li>
+      </ol>
+    </div>
+    <!-- END: Preloaded Image Set -->
+
+
+    <!-- START: App Initialization (loading) Screen -->
+    <div class="row" id="initializing" ng-hide="imagesFetched">
+      <div id="initialization-message-wrapper"
+      class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div id="initialization-message">
+          Initializaing application...
+        </div>
+      </div>
+    </div>
+    <!-- END: App Initialization (loading) Screen -->
+
+    
+    <!-- START: Image Pages -->
+    <div class="row" id="picture-pages" ng-click="mobileMenuActive = false">
+      <!-- first page of images -->
+      <ol id="first-page"
+        class="image-page"
+        start="{{1}}"
+        ng-show="currentPage === 1">
+        <li ng-repeat="picture in firstPageImageData"
+          class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+          <span class="image-numbering">{{picture.number}}</span>
+          <h5 class="image-title"><span>{{picture.title}}</span></h5>
+          <div class="page-view-image-wrapper"
+            image-index="{{picture.imageIndex}}"
+            ng-click="viewImage($event)">
+            <img preload-image
+            class="page-view"
+            ng-src="{{imageUrl(picture)}}"
+            default-image="{{::placeHolderImageUrl}}"
+            fallback-image="{{imageUrl(picture)}}">
+          </div>  
+        </li>
+      </ol>
+      <!-- first page of images -->
+
+      <!-- current page of images (excluding first & last pages) -->
+      <ol id="visible-page"
+        class="image-page"
+        start="{{visibleImageSetStartingNumber}}"
+        ng-hide="currentPage === 1 || currentPage === numPages"
+        ng-click="viewImage(picture)">
+        <li ng-repeat="number in oneToTwelve"
+          class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+          <span id="image-{{number}}-numbering" class="image-numbering"></span>
+          <h5 class="image-title">
+            <span id="image-{{number}}-heading">
+            </span>
+          </h5>
+          <div class="page-view-image-wrapper"
+            ng-click="viewImage($event, null)">
+            <img
+            id="image-{{number}}-image"
+            class="page-view"
+            src="{{::placeHolderImageUrl}}">
+          </div>  
+        </li>
+      </ol>
+      <!-- current page of images (excluding first & last pages) -->
+
+      <!-- last page of images -->
+      <ol id="last-page"
+        class="image-page"
+        start="{{lastPageStartingImageNumber}}"
+        ng-show="currentPage === numPages && currentPage !== 1">
+        <li ng-repeat="picture in lastPageImageData"
+          class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+          <span class="image-numbering">{{picture.number}}</span>
+          <h5 class="image-title"><span>{{picture.title}}</span></h5>
+          <div class="page-view-image-wrapper"
+            image-index="{{picture.imageIndex}}"
+            ng-click="viewImage($event)">
+            <img preload-image
+              class="page-view"
+              ng-src="{{imageUrl(picture)}}"
+              default-image="{{imageUrl(picture)}}"
+              fallback-image="{{imageUrl(picture)}}">
+          </div>
+        </li>
+      </ol>
+      <!-- last page of images -->
+    </div>
+    <!-- END: Image Pages -->
+
+
+    <!-- START: Bottom Pagination -->
+    <div class="row flick-pagination">
+
+      <uib-pagination
+        id="pagination-bottom"
+        class="pagination-l pagination-bottom"
+        ng-model="currentPage"
+        ng-click="changePage()"
+        boundary-links="true"
+        boundary-link-numbers="true"
+        rotate="true"
+        force-ellipses="true"
+        total-items="numImages"
+        items-per-page="imagesPerPage"
+        max-size="maxSize"
+        previous-text="&lsaquo;"
+        next-text="&rsaquo;"
+        first-text="&laquo;"
+        last-text="&raquo;">
+      </uib-pagination>
+    </div>
+    <!-- END: Bottom Pagination -->
+  </div>
+
+
+  <!-- START: Image Viewer Modal -->
+  <div id="image-viewer-modal">
+    <script type="text/ng-template" id="imageViewerModal.html">
+      <div class="modal-header">
+        <!-- Close -->
+        <span class="mobile-icon icon-cancel"
+          ng-click="closeModal()"
+          ng-show="true">
+        </span>
+        <!-- Previous -->
+        <span class="mobile-icon icon-left-bold"
+          ng-click="previousImage()"
+          ng-show="true">
+        </span>
+        <!-- Next -->
+        <span class="mobile-icon icon-right-bold"
+          ng-click="nextImage()"
+          ng-show="true">
+        </span>
+      </div>
+
+      <div class="modal-body">
+        <div id="modal-image-content"
+          ng-mouseenter="showModalControl = true"
+          ng-mouseleave="showModalControl = false">
+          <span class="modal-close-button icon-cancel"
+            ng-click="closeModal()"
+            ng-show="showModalControl">
+          </span>
+
+          <div id="modal-previous-image"
+            class="modal-arrow"
+            ng-click="previousImage()">
+            <div class="modal-arrow-wrapper" ng-show="showModalControl">
+              <span class="icon-left-open modal-arrow-icon"></span>
+            </div>
+          </div>
+
+          <div id="modal-main-image-wrapper">
+            <img src="{{::modalData.currentImage.defaultImageUrl}}" id="modal-main-image">
+            <div class="row" id="mobile-modal-title">
+              {{imagesData[currentImageIndex].title}}
+            </div>
+          </div>
+
+          <div id="modal-next-image"
+            class="modal-arrow"
+            ng-click="nextImage()">
+            <div class="modal-arrow-wrapper" ng-show="showModalControl">
+              <span class="icon-right-open modal-arrow-icon"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <ol id="modal-footer-images" class="row">
+            <li ng-repeat="image in footerImages"
+            ng-style="{{(image.imagesDataIndex === currentImageIndex) ? selectedImageStyle : ''}}">
+              <div class="image-wrapper">
+                <img src="{{imageUrl(image.imageData)}}"
+                  ng-click="updateMainImage(null, $event)"
+                  images-data-index="{{image.imagesDataIndex}}">
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </script>
+  </div>
+  <!-- END: Image Viewer Modal -->
+</section>
