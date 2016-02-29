@@ -25,3 +25,7 @@ Now that all the dependencies are installed, you can run the application by typi
 ```bash
 $ npm start
 ```
+Once the app is done with the build process and starts up, you can view it in a browser by going to
+```
+http://0.0.0.0:3000/
+```
