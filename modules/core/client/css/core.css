@@ -454,6 +454,14 @@ img.page-view {
     font-family: 'Cabin', sans-serif;
     font-weight: 400;
   }
+
+  .icon-right-open {
+    transform: translateX(1.5em);
+  }
+
+  .icon-left-open {
+    transform: translateX(-1.5em);
+  }
 }
 
 
@@ -561,7 +569,7 @@ img.page-view {
  *********/
  /* Menu slide animation */
 .slide-tile {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.25s ease-in-out;
   text-align: center;
   transform: translateY(0);
 }
