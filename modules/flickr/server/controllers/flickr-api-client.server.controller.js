@@ -141,14 +141,16 @@ function fetchAllPages(totalNumImages, imagesPerPage, callback) {
   }
 
   async.eachSeries(pageNumbers, function (pageNumber, eachCallback) {
-    fetchPage(pageNumber, perPage, function (pageFetchError, pageData) {
-      if (pageFetchError) {
-        console.log('fetchAllPages() > fetchPage() > async.eachSeries() error:', pageFetchError);
-        return eachCallback(pageFetchError);
-      }
+    process.nextTick(function () {
+      fetchPage(pageNumber, perPage, function (pageFetchError, pageData) {
+        if (pageFetchError) {
+          console.log('fetchAllPages() > fetchPage() > async.eachSeries() error:', pageFetchError);
+          return eachCallback(pageFetchError);
+        }
 
-      imagesData = imagesData.concat(pageData.photo);
-      eachCallback();
+        imagesData = imagesData.concat(pageData.photo);
+        eachCallback();
+      });
     });
   }, function (err) {
     if (err) {
@@ -239,7 +241,7 @@ function getAllImagesBasicData(req, res) {
           });
         }
 
-        console.log('test() > fetchAllPages() response object:', imagesData);
+        // console.log('test() > fetchAllPages() response object:', imagesData);
         res.send(imagesData);
       });
     };
